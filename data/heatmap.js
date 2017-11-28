@@ -1,3 +1,7 @@
+// Total values to print in the charts
+var totals = [];
+var sensed = 0;
+
 function initMap() {
     /*
      * Define the map where everything will be output
@@ -25,12 +29,17 @@ function initMap() {
         '#04B404'
     ];
 
+    var percentage = 20;
+
     colors.forEach(function(value){
         // Define an array and populate it in a random way
         var heatmapData = [];
 
         // Let's set a iterations variable so they aren't the same in each one
         var iterations = Math.floor((Math.random() * 200) + 1);
+
+        window.totals.push({label: percentage + '%', value: iterations});
+        window.sensed = window.sensed + iterations;
 
         for(k=0; k < iterations; k++) {
             randomOne = Math.random() / 500;
@@ -59,5 +68,9 @@ function initMap() {
 
         // Combine it into the google map
         heatmap.setMap(map);
+
+        percentage = percentage + 20; // Upgrade percentage for next iteration
     });
+
+    document.getElementById('sensed').innerHTML = window.sensed;
 }
