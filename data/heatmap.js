@@ -1,6 +1,7 @@
 // Total values to print in the charts
-var totals = [];
+var morrisData = [];
 var sensed = 0;
+var data = [];
 
 function initMap() {
     /*
@@ -38,7 +39,7 @@ function initMap() {
         // Let's set a iterations variable so they aren't the same in each one
         var iterations = Math.floor((Math.random() * 200) + 1);
 
-        window.totals.push({label: percentage + '%', value: iterations});
+        window.morrisData.push({label: (percentage - 20) + ' - ' + percentage, value: iterations});
         window.sensed = window.sensed + iterations;
 
         for(k=0; k < iterations; k++) {
@@ -48,6 +49,7 @@ function initMap() {
             lat = 28.863 + randomOne;
             long = -105.914 + randomTwo;
 
+            window.data.push({latitude: lat, longitude: long, value: Math.floor((Math.random() * 100) + 1)});
             heatmapData.push({location: new google.maps.LatLng(lat, long), weight: 10});
         };
 
@@ -72,5 +74,5 @@ function initMap() {
         percentage = percentage + 20; // Upgrade percentage for next iteration
     });
 
-    document.getElementById('sensed').innerHTML = window.sensed;
+    manipulateDOM();
 }

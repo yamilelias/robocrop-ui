@@ -1,7 +1,7 @@
 $(function() {
     Morris.Donut({
         element: 'morris-donut-chart',
-        data: window.totals,
+        data: window.morrisData,
         colors: [
             '#FFFF00',
             '#BFFF00',
