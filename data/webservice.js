@@ -1,9 +1,28 @@
-// Total values to print in the charts
+
+// Set data again if is not yet defined
 var morrisData = [];
 var sensed = 0;
 var data = [];
 
-function initMap() {
+// Get the information from the web service and set it to the variables
+window.onload = function(){
+    $.getJSON('http://localhost/index.php/api/heatmap/data?callback=?', function(data){
+        // Handles the callback when the data returns
+        console.log("Data: " + JSON.stringify(data));
+
+        window.data = data;
+        manipulateDOM();
+    })
+    .done(function() {
+        console.log( "success" );
+    })
+    .fail(function( jqxhr, textStatus, error ) {
+        var err = textStatus + ", " + error;
+        console.log( "Request Failed: " + err );
+    });
+};
+
+function setDataRetrieved() {
     /*
      * Define the map where everything will be output
      */
@@ -30,7 +49,7 @@ function initMap() {
         '#04B404'
     ];
 
-    var percentage = 20;
+    var percentage = 200;
 
     colors.forEach(function(value){
         // Define an array and populate it in a random way
@@ -39,7 +58,7 @@ function initMap() {
         // Let's set a iterations variable so they aren't the same in each one
         var iterations = Math.floor((Math.random() * 200) + 1);
 
-        window.morrisData.push({label: (percentage - 20) + ' - ' + percentage, value: iterations});
+        window.morrisData.push({label: (percentage - 200) + ' - ' + percentage, value: iterations});
         window.sensed = window.sensed + iterations;
 
         for(k=0; k < iterations; k++) {
@@ -49,7 +68,7 @@ function initMap() {
             lat = 28.863 + randomOne;
             long = -105.914 + randomTwo;
 
-            window.data.push({latitude: lat, longitude: long, value: Math.floor((Math.random() * 100) + 1)});
+            window.data.push({latitude: lat, longitude: long, value: Math.floor((Math.random() * 1000) + 1)});
             heatmapData.push({location: new google.maps.LatLng(lat, long), weight: 10});
         };
 
@@ -71,7 +90,7 @@ function initMap() {
         // Combine it into the google map
         heatmap.setMap(map);
 
-        percentage = percentage + 20; // Upgrade percentage for next iteration
+        percentage = percentage + 200; // Upgrade percentage for next iteration
     });
 
     manipulateDOM();
