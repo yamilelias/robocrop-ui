@@ -49,7 +49,7 @@ function initMap() {
             lat = 28.863 + randomOne;
             long = -105.914 + randomTwo;
 
-            window.data.push({latitude: lat, longitude: long, value: Math.floor((Math.random() * 1000) + 1)});
+            window.data.push({latitude: lat, longitude: long, sensor_value: Math.floor((Math.random() * 1000) + 1)});
             heatmapData.push({location: new google.maps.LatLng(lat, long), weight: 10});
         };
 

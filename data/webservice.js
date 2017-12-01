@@ -5,13 +5,11 @@ var sensed = 0;
 var data = [];
 
 // Get the information from the web service and set it to the variables
-window.onload = function(){
+function getWebService(){
     $.getJSON('http://localhost/index.php/api/heatmap/data?callback=?', function(data){
         // Handles the callback when the data returns
-        console.log("Data: " + JSON.stringify(data));
-
-        window.data = data;
-        manipulateDOM();
+        sanitizeRawData(data);
+        setDataRetrieved();
     })
     .done(function() {
         console.log( "success" );
@@ -22,7 +20,44 @@ window.onload = function(){
     });
 };
 
+// Make the needed changes to data for display
+function sanitizeRawData(data) {
+
+    // Initialize values
+    window.data.veryLow = [];
+    window.data.low = [];
+    window.data.regular = [];
+    window.data.high = [];
+    window.data.veryHigh = [];
+
+    // Iterate data
+    data.forEach(function (point) {
+        var sensor_value = point.sensor_value;
+
+        switch (true) {
+            case (sensor_value < 200):
+                window.data.veryLow.push(point);
+                break;
+            case (sensor_value > 200 && sensor_value < 400):
+                window.data.low.push(point);
+                break;
+            case (sensor_value > 400 && sensor_value < 600):
+                window.data.regular.push(point);
+                break;
+            case (sensor_value > 600 && sensor_value < 800):
+                window.data.high.push(point);
+                break;
+            case (sensor_value > 800 && sensor_value < 1000):
+                window.data.veryHigh.push(point);
+                break;
+        }
+    });
+}
+
+// Set Data to map
 function setDataRetrieved() {
+    console.log('Set Data Retrieved');
+
     /*
      * Define the map where everything will be output
      */
@@ -55,22 +90,20 @@ function setDataRetrieved() {
         // Define an array and populate it in a random way
         var heatmapData = [];
 
-        // Let's set a iterations variable so they aren't the same in each one
-        var iterations = Math.floor((Math.random() * 200) + 1);
+        window.data.forEach(function (value) {
+            var length = value.length;
 
-        window.morrisData.push({label: (percentage - 200) + ' - ' + percentage, value: iterations});
-        window.sensed = window.sensed + iterations;
+            console.log('Length: ' + length);
 
-        for(k=0; k < iterations; k++) {
-            randomOne = Math.random() / 500;
-            randomTwo = Math.random() / 500;
+            window.sensed = window.sensed + length;
+            console.log('Sensed: ' + window.sensed);
+            window.morrisData.push({label: (percentage - 200) + ' - ' + percentage, value: length});
+            console.log('MorrisData: ' + JSON.stringify(window.morrisData));
 
-            lat = 28.863 + randomOne;
-            long = -105.914 + randomTwo;
-
-            window.data.push({latitude: lat, longitude: long, value: Math.floor((Math.random() * 1000) + 1)});
-            heatmapData.push({location: new google.maps.LatLng(lat, long), weight: 10});
-        };
+            value.forEach(function (point) {
+                heatmapData.push({location: new google.maps.LatLng(point.latitude, point.longitude), weight: 10});
+            });
+        });
 
         // Create the heatmap layer with data
         var heatmap = new google.maps.visualization.HeatmapLayer({

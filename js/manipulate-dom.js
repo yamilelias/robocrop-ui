@@ -18,6 +18,6 @@ function manipulateDOM() {
 
         lat.innerHTML = item.latitude;
         long.innerHTML = item.longitude;
-        sensor.innerHTML = item.value;
+        sensor.innerHTML = item.sensor_value;
     });
 }
